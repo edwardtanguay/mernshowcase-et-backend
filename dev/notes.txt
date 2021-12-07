@@ -1,8 +1,9 @@
 - .. TODO
-	- .. bcrypt
-		- .. user signup
-
-
+	- .. admin: show not approved users
+		- x /getnotapprovedusers
+		- .. show on frontend
+		- program button to approve
+	- .. check password
 - backend
 	- signup
 		- check if user exists already
@@ -10,3 +11,7 @@
 	- env file
 		- FRONTEND_URL
 		- SESSION_SECRET
+
+- fronend
+	- only load data if needed (e.g. only load notYetApprovedUsers if admin is logged in )
+	- 4 user(s) plural/singular with qtools
