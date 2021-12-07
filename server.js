@@ -31,6 +31,11 @@ app.use(
 	})
 );
 
+const userIsInGroup = (user, accessGroup) => {
+	const accessGroupArray = user.accessGroups.split(',').map(m => m.trim());
+	return accessGroupArray.includes(accessGroup);
+}
+
 app.post("/login", async (req, res) => {
 	const login = req.body.login;
 	// const password = req.body.password;
@@ -81,8 +86,25 @@ app.get("/currentuser", async (req, res) => {
 	});
 });
 
+app.post("/approveuser", async (req, res) => {
+	const id = req.body.id;
+	let user = req.session.user;
+	if (!user) {
+		res.sendStatus(403);
+	} else {
+		if (!userIsInGroup(user, 'admins')) {
+			res.sendStatus(403);
+		} else {
+			const updateResult = await UserModel.findOneAndUpdate({ _id: new mongoose.Types.ObjectId(id) }, { $set: { accessGroups: 'loggedInUsers,members' } }, { new: true });
+			res.json({
+				result: updateResult
+			});
+		}
+	}
+});
+
 app.get("/notyetapprovedusers", async (req, res) => {
-	const users = await UserModel.find({"accessGroups": { "$regex": "notYetApprovedUsers", "$options": "i" }});
+	const users = await UserModel.find({ "accessGroups": { "$regex": "notYetApprovedUsers", "$options": "i" } });
 	res.json({
 		users
 	});

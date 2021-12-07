@@ -1,8 +1,9 @@
 - .. TODO
 	- .. admin: show not approved users
 		- x /getnotapprovedusers
-		- .. show on frontend
-		- program button to approve
+		- x show on frontend
+		- .. program button to approve
+			- .. /approveuser
 	- .. check password
 - backend
 	- signup
@@ -12,6 +13,8 @@
 		- FRONTEND_URL
 		- SESSION_SECRET
 
-- fronend
+- frontend
 	- only load data if needed (e.g. only load notYetApprovedUsers if admin is logged in )
 	- 4 user(s) plural/singular with qtools
+- frontend/backend
+	- make userIsInGroup for both ends
