@@ -1,0 +1,8 @@
+- .. TODO
+	- ..rename repositories
+
+	
+- backend
+	- env file
+		- FRONTEND_URL
+		- SESSION_SECRET
