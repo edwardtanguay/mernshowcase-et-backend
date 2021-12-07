@@ -2,12 +2,12 @@ import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema(
 	{
-		login: { 'type': String, "required": true },
-		firstName: { 'type': String, "required": true },
-		lastName: { 'type': String, "required": true },
-		email: { 'type': String, "required": true },
-		hash: { 'type': String, "required": true },
-		accessGroups: { 'type': String, "required": true },
+		login: { 'type': String },
+		firstName: { 'type': String },
+		lastName: { 'type': String },
+		email: { 'type': String },
+		hash: { 'type': String },
+		accessGroups: { 'type': String },
 	},
 	{
 		timestamps: true,

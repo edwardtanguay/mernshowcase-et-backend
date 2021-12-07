@@ -12,6 +12,7 @@ mongoose.connect(process.env.MONGODB_URI);
 
 const app = express();
 const PORT = 3003;
+const BCRYPT_SALT = 'tempsalt';
 
 app.use(cookieParser());
 app.use(cors(
@@ -37,6 +38,32 @@ app.post("/login", async (req, res) => {
 	if (!user) {
 		user = await UserModel.findOne({ login: "anonymousUser" });
 	}
+	req.session.user = user;
+	req.session.save();
+	res.json(user);
+});
+
+app.post("/signup", async (req, res) => {
+	const login = req.body.login;
+	const password1 = req.body.password1;
+	const password2 = req.body.password2;
+	const firstName = req.body.firstName;
+	const lastName = req.body.lastName;
+	const email = req.body.email;
+	bcrypt.genSalt().then(BCRYPT_SALT => {
+		bcrypt.hash("password", BCRYPT_SALT).then(hash => {
+			const user = await UserModel.create(
+				{
+					login,
+					firstName,
+					lastName,
+					email,
+					hash,
+					accessGroups: 'nnn'
+				}
+			);
+		});
+	});
 	req.session.user = user;
 	req.session.save();
 	res.json(user);

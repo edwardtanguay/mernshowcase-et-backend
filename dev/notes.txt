@@ -1,8 +1,13 @@
 - .. TODO
-	- ..rename repositories
+	- .. bcrypt
+		- .. user signup
 
-	
+
 - backend
+	- signup
+		- check if user exists already
+		- check if passwords are the same
 	- env file
 		- FRONTEND_URL
 		- SESSION_SECRET
+		- BCRYPT_SALT
