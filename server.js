@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose from "mongoose";
 import UserModel from "./models/User.js";
+import bcrypt from 'bcrypt';
 
 dotenv.config();
 
@@ -12,7 +13,6 @@ mongoose.connect(process.env.MONGODB_URI);
 
 const app = express();
 const PORT = 3003;
-const BCRYPT_SALT = 'tempsalt';
 
 app.use(cookieParser());
 app.use(cors(
@@ -50,23 +50,25 @@ app.post("/signup", async (req, res) => {
 	const firstName = req.body.firstName;
 	const lastName = req.body.lastName;
 	const email = req.body.email;
-	bcrypt.genSalt().then(BCRYPT_SALT => {
-		bcrypt.hash("password", BCRYPT_SALT).then(hash => {
-			const user = await UserModel.create(
-				{
-					login,
-					firstName,
-					lastName,
-					email,
-					hash,
-					accessGroups: 'nnn'
-				}
-			);
-		});
-	});
-	req.session.user = user;
-	req.session.save();
-	res.json(user);
+	if (login.trim() === '' || password1.trim() === '' || (password1 !== password2)) {
+		res.sendStatus(403);
+	} else {
+		const salt = await bcrypt.genSalt();
+		const hash = await bcrypt.hash(password1, salt);
+		const user = await UserModel.create(
+			{
+				login,
+				firstName,
+				lastName,
+				email,
+				hash,
+				accessGroups: 'loggedInUsers,notYetApprovedUsers'
+			}
+		);
+		req.session.user = user;
+		req.session.save();
+		res.json(user);
+	}
 });
 
 app.get("/currentuser", async (req, res) => {

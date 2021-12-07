@@ -10,4 +10,3 @@
 	- env file
 		- FRONTEND_URL
 		- SESSION_SECRET
-		- BCRYPT_SALT
