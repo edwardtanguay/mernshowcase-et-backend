@@ -49,30 +49,25 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/signup", async (req, res) => {
-	const login = req.body.login;
-	const password1 = req.body.password1;
-	const password2 = req.body.password2;
-	const firstName = req.body.firstName;
-	const lastName = req.body.lastName;
-	const email = req.body.email;
-	if (login.trim() === '' || password1.trim() === '' || (password1 !== password2)) {
+	const frontUser = req.body.user;
+	if (frontUser.login.trim() === '' || frontUser.password1.trim() === '' || (frontUser.password1 !== frontUser.password2)) {
 		res.sendStatus(403);
 	} else {
 		const salt = await bcrypt.genSalt();
-		const hash = await bcrypt.hash(password1, salt);
-		const user = await UserModel.create(
+		const hash = await bcrypt.hash(frontUser.password1, salt);
+		const dbuser = await UserModel.create(
 			{
-				login,
-				firstName,
-				lastName,
-				email,
+				login: frontUser.login,
+				firstName: frontUser.firstName,
+				lastName: frontUser.lastName,
+				email: frontUser.email,
 				hash,
 				accessGroups: 'loggedInUsers,notYetApprovedUsers'
 			}
 		);
-		req.session.user = user;
+		req.session.user = dbuser;
 		req.session.save();
-		res.json(user);
+		res.json(dbuser);
 	}
 });
 
