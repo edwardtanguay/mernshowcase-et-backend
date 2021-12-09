@@ -23,11 +23,23 @@ app.use(cors(
 ));
 
 app.use(express.json());
+// app.use(
+// 	session({
+// 		resave: true,
+// 		saveUninitialized: true,
+// 		secret: process.env.SESSION_SECRET
+// 	})
+// );
+
 app.use(
 	session({
-		resave: true,
+		secret: process.env.SESSION_SECRET,
+		resave: false,
 		saveUninitialized: true,
-		secret: process.env.SESSION_SECRET
+		cookie: {
+			secure: NODE_ENV === "production",
+			sameSite: NODE_ENV === "production" ? "None" : "lax"
+		}
 	})
 );
 
