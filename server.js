@@ -12,12 +12,12 @@ dotenv.config();
 mongoose.connect(process.env.MONGODB_URI);
 
 const app = express();
-const PORT = 3003;
+const PORT = process.env.PORT || 3003;
 
 app.use(cookieParser());
 app.use(cors(
 	{
-		origin: 'http://localhost:3001',
+		origin: process.env.ORIGIN_URL,
 		credentials: true
 	}
 ));
@@ -27,7 +27,7 @@ app.use(
 	session({
 		resave: true,
 		saveUninitialized: true,
-		secret: process.env.SESSION_SECRET || "use-env-secret728272"
+		secret: process.env.SESSION_SECRET
 	})
 );
 
