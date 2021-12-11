@@ -24,25 +24,25 @@ app.use(cors(
 		credentials: true
 	}
 ));
-app.use(
-	session({
-		resave: true,
-		saveUninitialized: true,
-		secret: process.env.SESSION_SECRET
-	})
-);
-
 // app.use(
 // 	session({
-// 		secret: process.env.SESSION_SECRET,
-// 		resave: false,
+// 		resave: true,
 // 		saveUninitialized: true,
-// 		cookie: {
-// 			secure: true,
-// 			sameSite: true 
-// 		}
+// 		secret: process.env.SESSION_SECRET
 // 	})
 // );
+
+app.use(
+	session({
+		secret: process.env.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: true,
+		cookie: {
+			secure: true,
+			sameSite: true 
+		}
+	})
+);
 
 const userIsInGroup = (user, accessGroup) => {
 	const accessGroupArray = user.accessGroups.split(',').map(m => m.trim());
