@@ -16,12 +16,11 @@ const PORT = process.env.PORT || 3003;
 app.use(express.json());
 
 app.set('trust proxy', 1);
-app.use(cors(
-	{
-		origin: process.env.ORIGIN_URL,
-		credentials: true
-	}
-));
+app.use(cors({
+	origin: process.env.NODE_ENV !== "production" ? process.env.FRONTEND_ORIGIN : [process.env.FRONTEND_ORIGIN_HTTP, process.env.FRONTEND_ORIGIN_HTTPS],
+	credentials: true
+}));
+
 app.use(cookieParser());
 app.use(
 	session({
@@ -36,18 +35,6 @@ app.use(
 		}
 	})
 );
-
-// app.use(
-// 	session({
-// 		secret: process.env.SESSION_SECRET,
-// 		resave: false,
-// 		saveUninitialized: true,
-// 		cookie: {
-// 			secure: true,
-// 			sameSite: true 
-// 		}
-// 	})
-// );
 
 const userIsInGroup = (user, accessGroup) => {
 	const accessGroupArray = user.accessGroups.split(',').map(m => m.trim());
