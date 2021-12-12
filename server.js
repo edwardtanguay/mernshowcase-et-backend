@@ -8,7 +8,6 @@ import UserModel from "./models/User.js";
 import bcrypt from 'bcrypt';
 
 dotenv.config();
-
 mongoose.connect(process.env.MONGODB_URI);
 
 const app = express();
@@ -17,32 +16,38 @@ const PORT = process.env.PORT || 3003;
 app.use(express.json());
 
 app.set('trust proxy', 1);
-app.use(cookieParser());
 app.use(cors(
 	{
 		origin: process.env.ORIGIN_URL,
 		credentials: true
 	}
 ));
-// app.use(
-// 	session({
-// 		resave: true,
-// 		saveUninitialized: true,
-// 		secret: process.env.SESSION_SECRET
-// 	})
-// );
-
+app.use(cookieParser());
 app.use(
 	session({
 		secret: process.env.SESSION_SECRET,
-		resave: false,
+		resave: true,
 		saveUninitialized: true,
 		cookie: {
-			secure: true,
-			sameSite: true 
+			httpOnly: true,
+			maxAge: 60 * 60 * 24,
+			sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+			secure: process.env.NODE_ENV === "production"
 		}
 	})
 );
+
+// app.use(
+// 	session({
+// 		secret: process.env.SESSION_SECRET,
+// 		resave: false,
+// 		saveUninitialized: true,
+// 		cookie: {
+// 			secure: true,
+// 			sameSite: true 
+// 		}
+// 	})
+// );
 
 const userIsInGroup = (user, accessGroup) => {
 	const accessGroupArray = user.accessGroups.split(',').map(m => m.trim());
