@@ -81,9 +81,11 @@ app.get("/currentuser", async (req, res) => {
 	if (!user) {
 		user = await UserModel.findOne({ login: "anonymousUser" });
 	}
-	res.json({
-		user
-	});
+	setTimeout(() => {
+		res.json({
+			user
+		});
+	}, 4000);
 });
 
 app.post("/approveuser", async (req, res) => {
