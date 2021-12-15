@@ -43,14 +43,26 @@ const userIsInGroup = (user, accessGroup) => {
 
 app.post("/login", async (req, res) => {
 	const login = req.body.login;
-	// const password = req.body.password;
+	const password = req.body.password;
 	let user = await UserModel.findOne({ login });
 	if (!user) {
 		user = await UserModel.findOne({ login: "anonymousUser" });
+		req.session.user = user;
+		req.session.save();
+		res.status(403).json(user);
+	} else {
+		const passwordsMatch = await bcrypt.compare(password, user.hash);
+		if (passwordsMatch) {
+			req.session.user = user;
+			req.session.save();
+			res.json(user);
+		} else {
+			user = await UserModel.findOne({ login: "anonymousUser" });
+			req.session.user = user;
+			req.session.save();
+			res.status(403).json(user);
+		}
 	}
-	req.session.user = user;
-	req.session.save();
-	res.json(user);
 });
 
 app.post("/signup", async (req, res) => {
@@ -82,9 +94,9 @@ app.get("/currentuser", async (req, res) => {
 		user = await UserModel.findOne({ login: "anonymousUser" });
 	}
 	// setTimeout(() => {
-		res.json({
-			user
-		});
+	res.json({
+		user
+	});
 	// }, 4000);
 });
 
